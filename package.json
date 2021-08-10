@@ -1,0 +1,14 @@
+{
+  "name": "jokes-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "scrapper.js",
+  "scripts": {
+    "start": "node scrapper.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "puppeteer": "^10.2.0"
+  }
+}

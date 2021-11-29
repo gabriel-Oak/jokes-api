@@ -2,14 +2,14 @@ const puppeteer = require('puppeteer');
 const fs = require('fs')
 
 const scrap = async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ headless: false });
   const jokes = [];
   try {
     const page = await browser.newPage();
     await page.goto('https://www.piadas.com.br/?page=0');
 
 
-    for (let index = 0; index < 500; index++) {
+    for (let index = 0; index < 1000; index++) {
       const [canChangePage, currentPage] = await page.evaluate(async ({ index }) => {
         const [, currentPage] = location.search.split('=')
         return [index / 10 >= +currentPage + 1, currentPage]
@@ -45,7 +45,7 @@ const scrap = async () => {
 
           return {
             title: node
-              .querySelector('.page-title')
+            .querySelector('.page-title')
               .querySelector('span')
               .innerText,
             category: category
@@ -55,15 +55,16 @@ const scrap = async () => {
               .replaceAll('Piadas do ', '')
               .replaceAll('Piadas ', ''),
             joke: Array
-              .from(content.querySelectorAll('p'))
-              .map((p) => p.innerText.replaceAll('-', '').split('\n').filter(Boolean))
+            .from(content.querySelectorAll('p'))
+            .map((p) => p.innerText.replaceAll('-', '').split('\n').filter(Boolean))
               .reduce((previous, current) => [...previous, ...current], []),
           }
         });
         console.log(joke?.title || 'REJECTED');
-
+        
         if (joke && !joke.category.toLowerCase().includes('imagens'))
-          jokes.push(joke)
+        jokes.push(joke)
+        await jokePage.close().catch(console.warn);
       } catch (error) {
         console.error(error);
         index--;
